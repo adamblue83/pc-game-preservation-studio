@@ -3,18 +3,11 @@ name: Build
 on:
   push:
     branches: [main]
-    paths:
-      - "pc-game-preservation-studio/**"
   pull_request:
-    paths:
-      - "pc-game-preservation-studio/**"
 
 jobs:
   build:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: pc-game-preservation-studio
     steps:
       - uses: actions/checkout@v4
 
