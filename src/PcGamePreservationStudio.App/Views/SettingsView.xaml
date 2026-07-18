@@ -1,0 +1,59 @@
+<UserControl x:Class="PcGamePreservationStudio.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+    <StackPanel MaxWidth="640" HorizontalAlignment="Left">
+        <TextBlock Text="Settings" Style="{StaticResource HeadingTextStyle}" />
+
+        <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="Steam installation folder" FontWeight="SemiBold" />
+                <TextBlock Text="Leave blank to auto-detect from standard paths and the registry." Style="{StaticResource SecondaryTextStyle}" Margin="0,2,0,8" />
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Browse…" Margin="8,0,0,0" Command="{Binding BrowseSteamPathCommand}" />
+                    <TextBox Text="{Binding SteamInstallPathOverride, UpdateSourceTrigger=PropertyChanged}" />
+                </DockPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="Default archive output folder" FontWeight="SemiBold" />
+                <TextBlock Text="Used to pre-fill the destination step once archive building is implemented." Style="{StaticResource SecondaryTextStyle}" Margin="0,2,0,8" />
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Browse…" Margin="8,0,0,0" Command="{Binding BrowseOutputFolderCommand}" />
+                    <TextBox Text="{Binding DefaultArchiveOutputFolder, UpdateSourceTrigger=PropertyChanged}" />
+                </DockPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="oscdimg.exe path" FontWeight="SemiBold" />
+                <TextBlock TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" Margin="0,2,0,8"
+                           Text="Used to build ISO images. Leave blank to auto-detect a Windows ADK install. This app never bundles oscdimg.exe — install the ADK's Deployment Tools component yourself, or point at an existing copy here." />
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Content="Browse…" Margin="8,0,0,0" Command="{Binding BrowseOscdimgPathCommand}" />
+                    <TextBox Text="{Binding OscdimgPathOverride, UpdateSourceTrigger=PropertyChanged}" />
+                </DockPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+            <StackPanel>
+                <CheckBox Content="Skip platform detection" IsChecked="{Binding SkipPlatformDetection}" />
+                <TextBlock Text="When enabled, Steam/GOG auto-detection is skipped and only manually-added local folders appear in the library."
+                           Style="{StaticResource SecondaryTextStyle}" TextWrapping="Wrap" Margin="0,4,0,0" />
+            </StackPanel>
+        </Border>
+
+        <StackPanel Orientation="Horizontal">
+            <Button Content="Save" Style="{StaticResource AccentButtonStyle}" Command="{Binding SaveCommand}" MinWidth="100" />
+            <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center" Margin="12,0,0,0"
+                       Style="{StaticResource SecondaryTextStyle}"
+                       Visibility="{Binding StatusMessage, Converter={StaticResource StringToVisibilityConverter}}" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

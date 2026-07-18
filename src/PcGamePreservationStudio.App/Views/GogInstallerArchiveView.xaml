@@ -1,0 +1,185 @@
+<UserControl x:Class="PcGamePreservationStudio.App.Views.GogInstallerArchiveView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel MaxWidth="680" HorizontalAlignment="Left">
+            <TextBlock Text="Create Archive from GOG Installers" Style="{StaticResource HeadingTextStyle}" TextWrapping="Wrap" />
+            <TextBlock TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,12"
+                       Text="Select the folder where you downloaded a game's official GOG offline installer files (setup .exe, .bin parts, DLC/patch/soundtrack installers). GOG Galaxy is not required for this." />
+
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" Margin="0,0,0,12" />
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Source folder" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Browse…" Margin="8,0,0,0" Command="{Binding BrowseSourceFolderCommand}" />
+                        <TextBox Text="{Binding SourceFolder, Mode=OneWay}" IsReadOnly="True" />
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16"
+                    Visibility="{Binding SourceFolder, Converter={StaticResource NullToVisibilityConverter}}">
+                <StackPanel>
+                    <TextBlock Text="Detected installer groups" FontWeight="SemiBold" Margin="0,0,0,4" />
+                    <TextBlock TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,10"
+                               Text="Grouping is a heuristic based on file names — review before including each group. DLC, patches, soundtracks, and manuals appear as separate groups." />
+                    <ItemsControl ItemsSource="{Binding DetectedGroups}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderBrush2}" BorderThickness="0,0,0,1" Padding="0,8">
+                                    <CheckBox IsChecked="{Binding IsIncluded}">
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding GroupKey}" FontWeight="SemiBold" />
+                                                <Border Background="{StaticResource SurfaceAltBrush}" CornerRadius="3" Padding="6,1" Margin="8,0,0,0">
+                                                    <TextBlock Text="{Binding KindLabel}" FontSize="10" Foreground="{StaticResource AccentBrush}" />
+                                                </Border>
+                                            </StackPanel>
+                                            <TextBlock Style="{StaticResource SecondaryTextStyle}">
+                                                <Run Text="{Binding FileCount, Mode=OneWay}" />
+                                                <Run Text=" file(s), " />
+                                                <Run Text="{Binding SizeLabel, Mode=OneWay}" />
+                                            </TextBlock>
+                                            <TextBlock Text="{Binding FileNamesSummary}" Style="{StaticResource SecondaryTextStyle}" TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </CheckBox>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Game title" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <TextBox Text="{Binding GameTitle, UpdateSourceTrigger=PropertyChanged}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Destination media" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <DockPanel Margin="0,0,0,8">
+                        <TextBlock DockPanel.Dock="Left" Text="Media type" VerticalAlignment="Center" Width="110" />
+                        <ComboBox ItemsSource="{Binding MediaTypeOptions}" SelectedItem="{Binding SelectedMediaType}"
+                                  DisplayMemberPath="Label" HorizontalAlignment="Left" Width="200" />
+                    </DockPanel>
+                    <DockPanel Margin="0,0,0,10">
+                        <DockPanel.Style>
+                            <Style TargetType="DockPanel">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedMediaType.MediaType}" Value="FolderOnly">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedMediaType.MediaType}" Value="IsoOnly">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DockPanel.Style>
+                        <TextBlock DockPanel.Dock="Left" Text="Safety margin (MB)" VerticalAlignment="Center" Width="110" />
+                        <TextBox Text="{Binding SafetyMarginMbText, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left" />
+                    </DockPanel>
+                    <TextBlock TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource SecondaryTextStyle}">
+                                <Setter Property="Visibility" Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedMediaType.MediaType}" Value="FolderOnly">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SelectedMediaType.MediaType}" Value="IsoOnly">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding CapacityPreview}" Value="{x:Null}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                        <Run Text="Estimated from selected installer files (" />
+                        <Run Text="{Binding CapacityPreview.ArchiveSizeBytes, Converter={StaticResource BytesToFriendlySizeConverter}, Mode=OneWay}" />
+                        <Run Text="): usable " />
+                        <Run Text="{Binding CapacityPreview.UsableCapacityBytes, Converter={StaticResource BytesToFriendlySizeConverter}, Mode=OneWay}" />
+                        <Run Text=", margin " />
+                        <Run Text="{Binding CapacityPreview.SafetyMarginBytes, Converter={StaticResource BytesToFriendlySizeConverter}, Mode=OneWay}" />
+                        <Run Text=" — " />
+                        <Run Text="{Binding CapacityPreview.FitsOnSingleMedium, Mode=OneWay, Converter={StaticResource FitsOnSingleMediumToTextConverter}}" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Destination folder" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Browse…" Margin="8,0,0,0" Command="{Binding BrowseDestinationCommand}" />
+                        <TextBox Text="{Binding DestinationFolder, UpdateSourceTrigger=PropertyChanged}" />
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                <Button Content="Archive Now" Style="{StaticResource AccentButtonStyle}" MinWidth="140"
+                        Command="{Binding BuildCommand}" />
+                <TextBlock Text="{Binding ProgressText}" VerticalAlignment="Center" Margin="12,0,0,0"
+                           Style="{StaticResource SecondaryTextStyle}"
+                           Visibility="{Binding ProgressText, Converter={StaticResource StringToVisibilityConverter}}" />
+            </StackPanel>
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16"
+                    Visibility="{Binding BuildResult, Converter={StaticResource NullToVisibilityConverter}}">
+                <StackPanel>
+                    <TextBlock FontWeight="SemiBold" Margin="0,0,0,8">
+                        <Run Text="Archive: " />
+                        <Run Text="{Binding BuildResult.Success, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Text="{Binding BuildResult.ArchiveFolderPath}" TextWrapping="Wrap" Margin="0,0,0,4" />
+
+                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,4"
+                               Visibility="{Binding BuildResult.IsoPath, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Run Text="ISO created: " FontWeight="SemiBold" />
+                        <Run Text="{Binding BuildResult.IsoPath, Mode=OneWay}" />
+                    </TextBlock>
+
+                    <TextBlock TextWrapping="Wrap" Foreground="{StaticResource DangerBrush}" Margin="0,0,0,4"
+                               Visibility="{Binding BuildResult.IsoBuildWarning, Converter={StaticResource StringToVisibilityConverter}}"
+                               Text="{Binding BuildResult.IsoBuildWarning}" />
+                    <TextBlock Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,8">
+                        <Run Text="{Binding BuildResult.TotalFiles, Mode=OneWay}" />
+                        <Run Text=" files, " />
+                        <Run Text="{Binding BuildResult.TotalBytes, Converter={StaticResource BytesToFriendlySizeConverter}, Mode=OneWay}" />
+                        <Run Text=", " />
+                        <Run Text="{Binding BuildResult.DiscCount, Mode=OneWay}" />
+                        <Run Text=" disc(s)" />
+                    </TextBlock>
+
+                    <TextBlock Margin="0,0,0,4">
+                        <Run Text="Preservation rating: " FontWeight="SemiBold" />
+                        <Run Text="{Binding BuildResult.Preservation.Rating, Mode=OneWay}" />
+                    </TextBlock>
+                    <ItemsControl ItemsSource="{Binding BuildResult.Preservation.Reasons}" Margin="0,0,0,8">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding StringFormat='- {0}'}" Style="{StaticResource SecondaryTextStyle}" TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Visibility="{Binding VerificationResult, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Run Text="Verification: " FontWeight="SemiBold" />
+                        <Run Text="{Binding VerificationResult.Outcome, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

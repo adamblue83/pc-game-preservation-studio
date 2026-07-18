@@ -1,0 +1,57 @@
+<Window x:Class="PcGamePreservationStudio.App.Views.FirstRunWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="Welcome" Height="520" Width="560"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Icon="/Assets/AppIcon.ico"
+        Background="{StaticResource BackgroundBrush}">
+    <Grid Margin="32">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Welcome to PC Game Preservation Studio" Style="{StaticResource HeadingTextStyle}" TextWrapping="Wrap" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" VerticalAlignment="Top">
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,12">
+                This app helps you create personal archival copies of PC games you legally own, from Steam,
+                GOG, or a local folder — to a folder, a UDF ISO image, or a burned disc, with checksums and
+                a restore workflow.
+            </TextBlock>
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,12">
+                <StackPanel>
+                    <TextBlock Text="What this app does not do" FontWeight="SemiBold" Margin="0,0,0,6" />
+                    <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextSecondaryBrush}">
+                        It does not remove DRM, emulate platform services, bypass ownership checks, or
+                        guarantee that a restored game will run without its original launcher, account,
+                        activation service, or online features. Users are responsible for complying with
+                        applicable laws, licenses, and platform agreements.
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <TextBlock TextWrapping="Wrap" Margin="0,0,0,12">
+                On continuing, this app will look for a Steam installation on this machine (standard install
+                paths, then the registry) so detected games appear in your library automatically. It never
+                asks for your Steam username, password, or reads any authentication token.
+            </TextBlock>
+
+            <CheckBox Content="Skip platform detection — I'll add game folders manually instead"
+                      IsChecked="{Binding SkipPlatformDetection}" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button Content="Continue" Style="{StaticResource AccentButtonStyle}" MinWidth="120"
+                    Command="{Binding ContinueCommand}" IsEnabled="{Binding IsSaving, Converter={StaticResource InverseBooleanConverter}}" />
+        </StackPanel>
+    </Grid>
+</Window>

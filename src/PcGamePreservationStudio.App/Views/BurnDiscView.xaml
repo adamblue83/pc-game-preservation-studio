@@ -1,0 +1,71 @@
+<UserControl x:Class="PcGamePreservationStudio.App.Views.BurnDiscView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel MaxWidth="680" HorizontalAlignment="Left">
+            <TextBlock Text="Burn Disc" Style="{StaticResource HeadingTextStyle}" />
+            <TextBlock TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,12"
+                       Text="Burns an already-built ISO (see Create Archive's ISO Image destination) to a blank or rewritable disc via IMAPI2. This app never burns anything without you choosing the ISO and drive yourself." />
+
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" Margin="0,0,0,12" />
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="ISO to burn" FontWeight="SemiBold" Margin="0,0,0,8" />
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Content="Browse…" Margin="8,0,0,0" Command="{Binding BrowseIsoCommand}" />
+                        <TextBox Text="{Binding IsoPath}" IsReadOnly="True" />
+                    </DockPanel>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,8">
+                        <TextBlock DockPanel.Dock="Left" Text="Optical drive" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        <Button DockPanel.Dock="Right" Content="Refresh" HorizontalAlignment="Right" Command="{Binding RefreshDrivesCommand}" />
+                        <TextBlock Text=" " />
+                    </DockPanel>
+                    <ComboBox ItemsSource="{Binding Drives}" SelectedItem="{Binding SelectedDrive}" HorizontalAlignment="Left" Width="360">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding DriveLetter, Mode=OneWay}" />
+                                    <Run Text=" — " />
+                                    <Run Text="{Binding IsMediaPresent, Mode=OneWay, StringFormat='media present: {0}'}" />
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                <Button Content="Burn" Style="{StaticResource AccentButtonStyle}" MinWidth="120" Command="{Binding BurnCommand}" />
+                <TextBlock Text="{Binding ProgressText}" VerticalAlignment="Center" Margin="12,0,0,0"
+                           Style="{StaticResource SecondaryTextStyle}"
+                           Visibility="{Binding ProgressText, Converter={StaticResource StringToVisibilityConverter}}" />
+            </StackPanel>
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16"
+                    Visibility="{Binding BurnResult, Converter={StaticResource NullToVisibilityConverter}}">
+                <StackPanel>
+                    <TextBlock FontWeight="SemiBold" Margin="0,0,0,8">
+                        <Run Text="Burn: " />
+                        <Run Text="{Binding BurnResult.Success, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Text="{Binding BurnResult.ErrorMessage}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap" Margin="0,0,0,8"
+                               Visibility="{Binding BurnResult.ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" />
+                    <TextBlock Visibility="{Binding VerificationResult, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Run Text="Verification (read-back): " FontWeight="SemiBold" />
+                        <Run Text="{Binding VerificationResult.Outcome, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

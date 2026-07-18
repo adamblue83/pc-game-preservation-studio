@@ -1,0 +1,32 @@
+## .NET / Visual Studio
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.userosscache
+*.sln.docstates
+
+## Rider / VS Code
+.idea/
+.vscode/
+*.swp
+
+## Build output
+publish/
+artifacts/
+
+## Test results
+TestResults/
+*.trx
+
+## Local app data / archives created while running the app
+*.db
+*.db-shm
+*.db-wal
+/appsettings.local.json
+/archive-output/
+
+## OS files
+Thumbs.db
+.DS_Store

@@ -1,0 +1,160 @@
+<Window x:Class="PcGamePreservationStudio.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:PcGamePreservationStudio.App.ViewModels"
+        mc:Ignorable="d"
+        Title="PC Game Preservation Studio" Height="720" Width="1180" MinHeight="480" MinWidth="820"
+        Icon="/Assets/AppIcon.ico"
+        Background="{StaticResource BackgroundBrush}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="240" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Navigation rail -->
+        <Border Grid.Column="0" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush2}" BorderThickness="0,0,1,0">
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="16,20,12,24">
+                    <Image Source="Assets/AppLogo.png" Width="40" Height="40" Margin="0,0,8,0" VerticalAlignment="Center" />
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="PC Game" FontSize="16" FontWeight="SemiBold" />
+                        <TextBlock Text="Preservation Studio" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource AccentBrush}"
+                                   TextWrapping="Wrap" MaxWidth="164" />
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Top" Margin="8,0">
+                    <Button Content="Library" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static vm:NavigationSection.Library}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <Binding Path="SelectedSection" Converter="{StaticResource EnumMatchToBooleanConverter}" ConverterParameter="Library" />
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Create Archive" Margin="0,4,0,0" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static vm:NavigationSection.CreateArchive}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <Binding Path="SelectedSection" Converter="{StaticResource EnumMatchToBooleanConverter}" ConverterParameter="CreateArchive" />
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Archives" Margin="0,4,0,0" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static vm:NavigationSection.Archives}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <Binding Path="SelectedSection" Converter="{StaticResource EnumMatchToBooleanConverter}" ConverterParameter="Archives" />
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Burn Disc" Margin="0,4,0,0" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static vm:NavigationSection.BurnDisc}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <Binding Path="SelectedSection" Converter="{StaticResource EnumMatchToBooleanConverter}" ConverterParameter="BurnDisc" />
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Verify Disc" Margin="0,4,0,0" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static vm:NavigationSection.VerifyDisc}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <Binding Path="SelectedSection" Converter="{StaticResource EnumMatchToBooleanConverter}" ConverterParameter="VerifyDisc" />
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="Restore" Margin="0,4,0,0" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static vm:NavigationSection.Restore}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <Binding Path="SelectedSection" Converter="{StaticResource EnumMatchToBooleanConverter}" ConverterParameter="Restore" />
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Bottom" Margin="8,0,8,16">
+                    <Button Content="Settings" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static vm:NavigationSection.Settings}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <Binding Path="SelectedSection" Converter="{StaticResource EnumMatchToBooleanConverter}" ConverterParameter="Settings" />
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="About" Margin="0,4,0,0" Command="{Binding NavigateToCommand}" CommandParameter="{x:Static vm:NavigationSection.About}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Value="True">
+                                        <DataTrigger.Binding>
+                                            <Binding Path="SelectedSection" Converter="{StaticResource EnumMatchToBooleanConverter}" ConverterParameter="About" />
+                                        </DataTrigger.Binding>
+                                        <Setter Property="Background" Value="{StaticResource SurfaceAltBrush}" />
+                                        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Page content -->
+        <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" Margin="24" />
+    </Grid>
+</Window>

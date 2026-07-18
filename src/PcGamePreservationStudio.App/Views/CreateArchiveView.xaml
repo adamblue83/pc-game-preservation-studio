@@ -1,0 +1,245 @@
+<UserControl x:Class="PcGamePreservationStudio.App.Views.CreateArchiveView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+    <Grid>
+        <!-- No game selected yet -->
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" MaxWidth="480">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Game}" Value="{x:Null}" />
+                                <Condition Binding="{Binding IsLoading}" Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible" />
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <TextBlock Text="Create Archive" Style="{StaticResource HeadingTextStyle}" />
+            <TextBlock TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,12"
+                       Text="Select a game from your Library, then click Archive on its detail page to start here." />
+            <Button Content="Go to Library" Command="{Binding GoToLibraryCommand}" HorizontalAlignment="Left" />
+        </StackPanel>
+
+        <TextBlock Text="Loading…" Style="{StaticResource SecondaryTextStyle}"
+                   Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
+                   HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+        <!-- Game selected -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding Game, Converter={StaticResource NullToVisibilityConverter}}">
+            <StackPanel MaxWidth="640" HorizontalAlignment="Left">
+                <TextBlock Text="{Binding Game.Title, StringFormat='Create Archive — {0}'}" Style="{StaticResource HeadingTextStyle}" TextWrapping="Wrap" />
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap"
+                           Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" Margin="0,0,0,12" />
+
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Save locations detected" FontWeight="SemiBold" Margin="0,0,0,4" />
+                        <TextBlock TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,10"
+                                   Text="Review each candidate before including it — these paths can contain personal files beyond just save data." />
+                        <ItemsControl ItemsSource="{Binding SaveCandidates}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource BorderBrush2}" BorderThickness="0,0,0,1" Padding="0,8">
+                                        <StackPanel>
+                                            <CheckBox IsChecked="{Binding IsIncluded}">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding FullPath}" TextWrapping="Wrap" />
+                                                    <TextBlock Style="{StaticResource SecondaryTextStyle}">
+                                                        <Run Text="{Binding ConfidenceLabel, Mode=OneWay}" />
+                                                        <Run Text=" confidence · " />
+                                                        <Run Text="{Binding SizeLabel, Mode=OneWay}" />
+                                                        <Run Text=" · " />
+                                                        <Run Text="{Binding DetectionReason, Mode=OneWay}" />
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </CheckBox>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock Text="No likely save locations were found." Margin="0,4,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource SecondaryTextStyle}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SaveCandidates.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Destination media" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <DockPanel Margin="0,0,0,8">
+                            <TextBlock DockPanel.Dock="Left" Text="Media type" VerticalAlignment="Center" Width="110" />
+                            <ComboBox ItemsSource="{Binding MediaTypeOptions}" SelectedItem="{Binding SelectedMediaType}"
+                                      DisplayMemberPath="Label" HorizontalAlignment="Left" Width="200" />
+                        </DockPanel>
+                        <DockPanel Margin="0,0,0,10">
+                            <DockPanel.Style>
+                                <Style TargetType="DockPanel">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedMediaType.MediaType}" Value="FolderOnly">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedMediaType.MediaType}" Value="IsoOnly">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DockPanel.Style>
+                            <TextBlock DockPanel.Dock="Left" Text="Safety margin (MB)" VerticalAlignment="Center" Width="110" />
+                            <TextBox Text="{Binding SafetyMarginMbText, UpdateSourceTrigger=PropertyChanged}" Width="100" HorizontalAlignment="Left" />
+                        </DockPanel>
+                        <TextBlock TextWrapping="Wrap">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource SecondaryTextStyle}">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedMediaType.MediaType}" Value="FolderOnly">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SelectedMediaType.MediaType}" Value="IsoOnly">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding CapacityPreview}" Value="{x:Null}">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                            <Run Text="Estimated from installed size (" />
+                            <Run Text="{Binding CapacityPreview.ArchiveSizeBytes, Converter={StaticResource BytesToFriendlySizeConverter}, Mode=OneWay}" />
+                            <Run Text="): usable " />
+                            <Run Text="{Binding CapacityPreview.UsableCapacityBytes, Converter={StaticResource BytesToFriendlySizeConverter}, Mode=OneWay}" />
+                            <Run Text=", margin " />
+                            <Run Text="{Binding CapacityPreview.SafetyMarginBytes, Converter={StaticResource BytesToFriendlySizeConverter}, Mode=OneWay}" />
+                            <Run Text=" — " />
+                            <Run Text="{Binding CapacityPreview.FitsOnSingleMedium, Mode=OneWay, Converter={StaticResource FitsOnSingleMediumToTextConverter}}" />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Destination folder" FontWeight="SemiBold" Margin="0,0,0,8" />
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right" Content="Browse…" Margin="8,0,0,0" Command="{Binding BrowseDestinationCommand}" />
+                            <TextBox Text="{Binding DestinationFolder, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                    <Button Content="Archive Now" Style="{StaticResource AccentButtonStyle}" MinWidth="140"
+                            Command="{Binding BuildCommand}" />
+                    <TextBlock Text="{Binding ProgressText}" VerticalAlignment="Center" Margin="12,0,0,0"
+                               Style="{StaticResource SecondaryTextStyle}"
+                               Visibility="{Binding ProgressText, Converter={StaticResource StringToVisibilityConverter}}" />
+                </StackPanel>
+
+                <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16"
+                        Visibility="{Binding BuildResult, Converter={StaticResource NullToVisibilityConverter}}">
+                    <StackPanel>
+                        <TextBlock FontWeight="SemiBold" Margin="0,0,0,8">
+                            <Run Text="Archive: " />
+                            <Run Text="{Binding BuildResult.Success, Mode=OneWay}" />
+                        </TextBlock>
+                        <TextBlock Text="{Binding BuildResult.ArchiveFolderPath}" TextWrapping="Wrap" Margin="0,0,0,4" />
+
+                        <TextBlock TextWrapping="Wrap" Margin="0,0,0,4"
+                                   Visibility="{Binding BuildResult.IsoPath, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Run Text="ISO created: " FontWeight="SemiBold" />
+                            <Run Text="{Binding BuildResult.IsoPath, Mode=OneWay}" />
+                        </TextBlock>
+
+                        <StackPanel Margin="0,0,0,4">
+                            <StackPanel.Style>
+                                <Style TargetType="StackPanel">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BuildResult.DiscIsoPaths.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Style>
+                            <TextBlock TextWrapping="Wrap">
+                                <Run Text="Discs converted to ISO: " FontWeight="SemiBold" />
+                                <Run Text="{Binding BuildResult.DiscIsoPaths.Count, Mode=OneWay}" />
+                                <Run Text=" — ready to burn via Burn Disc" />
+                            </TextBlock>
+                            <ItemsControl ItemsSource="{Binding BuildResult.DiscIsoPaths}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding}" Style="{StaticResource SecondaryTextStyle}" TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <TextBlock TextWrapping="Wrap" Foreground="{StaticResource DangerBrush}" Margin="0,0,0,4"
+                                   Visibility="{Binding BuildResult.IsoBuildWarning, Converter={StaticResource StringToVisibilityConverter}}"
+                                   Text="{Binding BuildResult.IsoBuildWarning}" />
+                        <TextBlock Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,8">
+                            <Run Text="{Binding BuildResult.TotalFiles, Mode=OneWay}" />
+                            <Run Text=" files, " />
+                            <Run Text="{Binding BuildResult.TotalBytes, Converter={StaticResource BytesToFriendlySizeConverter}, Mode=OneWay}" />
+                            <Run Text=", " />
+                            <Run Text="{Binding BuildResult.DiscCount, Mode=OneWay}" />
+                            <Run Text=" disc(s)" />
+                        </TextBlock>
+
+                        <TextBlock TextWrapping="Wrap" Foreground="{StaticResource DangerBrush}" Margin="0,0,0,8">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding BuildResult.FilesTooLargeForMedium.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                            <Run Text="{Binding BuildResult.FilesTooLargeForMedium.Count, Mode=OneWay}" />
+                            <Run Text=" file(s) were too large to fit on a single disc of this medium and were left in the archive folder unassigned — choose a larger medium or a folder-only destination for this game." />
+                        </TextBlock>
+
+                        <TextBlock Margin="0,0,0,4">
+                            <Run Text="Preservation rating: " FontWeight="SemiBold" />
+                            <Run Text="{Binding BuildResult.Preservation.Rating, Mode=OneWay}" />
+                        </TextBlock>
+                        <ItemsControl ItemsSource="{Binding BuildResult.Preservation.Reasons}" Margin="0,0,0,8">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StringFormat='- {0}'}" Style="{StaticResource SecondaryTextStyle}" TextWrapping="Wrap" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Visibility="{Binding VerificationResult, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Run Text="Verification: " FontWeight="SemiBold" />
+                            <Run Text="{Binding VerificationResult.Outcome, Mode=OneWay}" />
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

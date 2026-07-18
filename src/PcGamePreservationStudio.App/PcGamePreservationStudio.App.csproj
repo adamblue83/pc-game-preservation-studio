@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\PcGamePreservationStudio.Core\PcGamePreservationStudio.Core.csproj" />
+    <ProjectReference Include="..\PcGamePreservationStudio.Platforms.Steam\PcGamePreservationStudio.Platforms.Steam.csproj" />
+    <ProjectReference Include="..\PcGamePreservationStudio.Persistence\PcGamePreservationStudio.Persistence.csproj" />
+    <ProjectReference Include="..\PcGamePreservationStudio.Infrastructure\PcGamePreservationStudio.Infrastructure.csproj" />
+    <ProjectReference Include="..\PcGamePreservationStudio.Archiving\PcGamePreservationStudio.Archiving.csproj" />
+    <ProjectReference Include="..\PcGamePreservationStudio.Media\PcGamePreservationStudio.Media.csproj" />
+    <ProjectReference Include="..\PcGamePreservationStudio.Platforms.Gog\PcGamePreservationStudio.Platforms.Gog.csproj" />
+    <ProjectReference Include="..\PcGamePreservationStudio.Burning\PcGamePreservationStudio.Burning.csproj" />
+    <ProjectReference Include="..\PcGamePreservationStudio.Analysis\PcGamePreservationStudio.Analysis.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.10" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <RootNamespace>PcGamePreservationStudio.App</RootNamespace>
+    <AssemblyName>PcGamePreservationStudio</AssemblyName>
+    <ApplicationIcon>Assets\AppIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\AppIcon.ico" />
+    <Resource Include="Assets\AppLogo.png" />
+  </ItemGroup>
+
+</Project>

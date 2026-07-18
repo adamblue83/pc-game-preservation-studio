@@ -1,0 +1,65 @@
+<UserControl x:Class="PcGamePreservationStudio.App.Views.VerifyDiscView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel MaxWidth="680" HorizontalAlignment="Left">
+            <TextBlock Text="Verify Disc" Style="{StaticResource HeadingTextStyle}" />
+            <TextBlock TextWrapping="Wrap" Style="{StaticResource SecondaryTextStyle}" Margin="0,0,0,12"
+                       Text="Insert a burned archive disc, select its drive below, and verify it by re-reading every file and comparing it against the checksums recorded when it was built." />
+
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{StaticResource DangerBrush}" TextWrapping="Wrap"
+                       Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}" Margin="0,0,0,12" />
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,8">
+                        <TextBlock DockPanel.Dock="Left" Text="Optical drive" FontWeight="SemiBold" VerticalAlignment="Center" />
+                        <Button DockPanel.Dock="Right" Content="Refresh" HorizontalAlignment="Right" Command="{Binding RefreshDrivesCommand}" />
+                        <TextBlock Text=" " />
+                    </DockPanel>
+                    <ComboBox ItemsSource="{Binding Drives}" SelectedItem="{Binding SelectedDrive}" HorizontalAlignment="Left" Width="360">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding DriveLetter, Mode=OneWay}" />
+                                    <Run Text=" — " />
+                                    <Run Text="{Binding IsMediaPresent, Mode=OneWay, StringFormat='media present: {0}'}" />
+                                </TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                <Button Content="Verify" Style="{StaticResource AccentButtonStyle}" MinWidth="120" Command="{Binding VerifyCommand}" />
+                <TextBlock Text="Verifying…" VerticalAlignment="Center" Margin="12,0,0,0"
+                           Style="{StaticResource SecondaryTextStyle}"
+                           Visibility="{Binding IsVerifying, Converter={StaticResource BoolToVisibilityConverter}}" />
+            </StackPanel>
+
+            <Border Style="{StaticResource CardBorderStyle}" Margin="0,0,0,16"
+                    Visibility="{Binding VerificationResult, Converter={StaticResource NullToVisibilityConverter}}">
+                <StackPanel>
+                    <TextBlock FontWeight="SemiBold" Margin="0,0,0,4">
+                        <Run Text="Outcome: " />
+                        <Run Text="{Binding VerificationResult.Outcome, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource SecondaryTextStyle}">
+                        <Run Text="{Binding VerificationResult.MissingFiles.Count, Mode=OneWay}" />
+                        <Run Text=" missing, " />
+                        <Run Text="{Binding VerificationResult.ModifiedFiles.Count, Mode=OneWay}" />
+                        <Run Text=" modified, " />
+                        <Run Text="{Binding VerificationResult.UnreadableFiles.Count, Mode=OneWay}" />
+                        <Run Text=" unreadable, " />
+                        <Run Text="{Binding VerificationResult.UnexpectedFiles.Count, Mode=OneWay}" />
+                        <Run Text=" unexpected" />
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
