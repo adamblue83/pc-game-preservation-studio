@@ -6,6 +6,13 @@ of PC games you legally own, sourced from Steam (installed files), GOG
 can be written to a folder, a UDF ISO image, or burned to optical disc, with
 SHA-256 checksums and a restore workflow.
 
+## Screenshots
+
+| | |
+|---|---|
+| ![Library](docs/screenshots/library.png) | ![Preservation analysis](docs/screenshots/preservation-analysis.png) |
+| ![Create Archive](docs/screenshots/create-archive.png) | ![About](docs/screenshots/about.png) |
+
 ## What this project is not
 
 PC Game Preservation Studio does **not** bypass DRM, patch executables,
